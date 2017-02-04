@@ -1,6 +1,6 @@
 public class AI {
-	private static int MIN_SCORE = -10;
-	private static int MAX_SCORE = 10;
+	private static int MIN_SCORE = -20;
+	private static int MAX_SCORE = 20;
 	
 	/**
 	 * Random algorithm, assumes X goes first
@@ -59,6 +59,34 @@ public class AI {
 		}
 		return bestPos - 1;
 	}
+
+	/**
+	 * MiniMax algorithm, AI plays O
+	 * @param XPattern Positions taken by X: bit i*3+j = 1 : position row i col j taken by X, 0 otherwise
+	 * @param OPattern Positions taken by O: bit i*3+j = 1 : position row i col j taken by O, 0 otherwise
+	 * @return position of next piece: 0~8
+	 */
+	public static int MiniMaxAlgorithmDepth(int XPattern, int OPattern) {
+		int allPattern = XPattern | OPattern;
+		int movingBit = 1;
+        int maxScore = Integer.MIN_VALUE;
+		int pos = 1;
+		int bestPos = -1;
+		// get all moves scores for pos not set
+		for(int i =0; i<9; i++) {
+			if( (allPattern & movingBit) == 0 ) {
+				int score = GetScore( XPattern, OPattern | movingBit, true, 0);
+				if(score > maxScore ) {
+					maxScore = score;
+					bestPos = pos;
+				}
+			}
+			movingBit = movingBit << 1;
+			pos ++;
+		}
+		return bestPos - 1;
+	}
+	
 	/**
 	 * Helper function that gets the score of a single move, AI is O
 	 * @param XPattern Positions taken by X: bit i*3+j = 1 : position row i col j taken by X, 0 otherwise
@@ -83,6 +111,44 @@ public class AI {
 					scores[i] = GetScore( XPattern | movingBit, OPattern, false);
 				} else {
 					scores[i] = GetScore( XPattern, OPattern | movingBit, true);
+				}
+			}
+			movingBit = movingBit << 1;
+		}
+
+		if(Xturn) {
+			return minValue( scores );
+		} else {
+			return maxValue( scores );
+		}
+	}
+
+	/**
+	 * Helper function that gets the score of a single move, AI is O
+	 * @param XPattern Positions taken by X: bit i*3+j = 1 : position row i col j taken by X, 0 otherwise
+	 * @param OPattern Positions taken by O: bit i*3+j = 1 : position row i col j taken by O, 0 otherwise
+	 * @param Xturn if current move is made by X
+	 * @param depth depth of iterations, longer is better
+	 * @return score by current move
+	 */
+	private static int GetScore(int XPattern, int OPattern, boolean Xturn, int depth) {
+		// base cases
+		if(Board.IsWinner(XPattern)) { return MIN_SCORE + depth; }
+		if(Board.IsWinner(OPattern)) { return MAX_SCORE - depth; }
+		if(Board.IsDraw( XPattern|OPattern )) { return depth; }
+		
+		int allPattern = XPattern | OPattern;
+		int movingBit = 1;
+        int[] scores = new int[9];
+		// get all moves scores for pos not set
+		for(int i =0; i<9; i++) {
+			scores[i] = Xturn ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+			if( (allPattern & movingBit) == 0 ) {
+				// update score
+				if(Xturn) {
+					scores[i] = GetScore( XPattern | movingBit, OPattern, false, depth++);
+				} else {
+					scores[i] = GetScore( XPattern, OPattern | movingBit, true, depth++);
 				}
 			}
 			movingBit = movingBit << 1;
