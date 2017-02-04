@@ -49,8 +49,9 @@ public class TicTacToe extends JFrame {
 						// Get the row and column clicked
 						int rowSelected = mouseY / Cell.CELL_SIZE;
 						int colSelected = mouseX / Cell.CELL_SIZE;
-					
-						board.setPiece(rowSelected, colSelected, board.getNextPiece()); // set piece and update internal states
+
+						// Process the step by player
+						Board.State boardState = board.setPiece(rowSelected, colSelected, board.getNextPiece()); // set piece and update internal states
 						statusBar.setStatusText( board.getNextPiece() ); // update text to show who's turn
 						if( board.getWinner() == GameState.X_WIN) {
 							statusBar.setStatusText( GameState.X_WIN);
@@ -63,6 +64,32 @@ public class TicTacToe extends JFrame {
 							gameState = GameState.DRAW;
 						}
 						repaint();  // Refresh the drawing canvas
+
+						// Process the step by AI
+						if( gameState == GameState.PLAYER && boardState==Board.State.OK ) {
+							// if the game is still going on, change the state to AI playing
+							gameState = GameState.AI;
+							// test random algorithm
+							int pos = AI.RandomAlgorithm(board.XPattern, board.OPattern);
+							rowSelected = pos / 3;
+							colSelected = pos % 3;
+							board.setPiece(rowSelected, colSelected, board.getNextPiece()); // set piece and update internal states
+							statusBar.setStatusText( board.getNextPiece() ); // update text to show who's turn
+							if( board.getWinner() == GameState.X_WIN) {
+								statusBar.setStatusText( GameState.X_WIN);
+								gameState = GameState.X_WIN;
+							} else if ( board.getWinner() == GameState.O_WIN) {
+								statusBar.setStatusText( GameState.O_WIN );
+								gameState = GameState.O_WIN;
+							} else if ( board.getWinner() == GameState.DRAW) {
+								statusBar.setStatusText( GameState.DRAW );
+								gameState = GameState.DRAW;
+							}
+							repaint();  // Refresh the drawing canvas
+
+							if (gameState == GameState.AI) { gameState = GameState.PLAYER; }
+						}
+							
 					}
 				}
 			}

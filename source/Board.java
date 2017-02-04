@@ -32,8 +32,8 @@ public class Board extends JPanel {
       0x111,   // 0b100 010 001 (diagonal)
       0x054  // 0b001 010 100 (opposite diagonal)
 	};
-	private int XPattern;
-	private int OPattern;
+	public int XPattern; // bit i*3+j = 1 : position row i col j taken by X, 0 otherwise 
+	public int OPattern; 
 	
 	public Board(Piece firstPiece) {
 		// Prepare the ImageIcon and Image objects for drawImage()
