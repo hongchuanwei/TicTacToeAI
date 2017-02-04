@@ -85,7 +85,7 @@ public class Board extends JPanel {
 		// no one wins and out of step, then draw
 		if(nPieceSet == NUM_ROW * NUM_COL) return GameState.DRAW;
 		// otherwise, game goes on
-		return GameState.PLAYING;
+		return GameState.PLAYER;
 	}
 
 	public void init() {

@@ -10,7 +10,7 @@ public class TicTacToe extends JFrame {
 	private Piece firstPiece = Piece.X;
 	private StatusBar statusBar;
 	public TicTacToe() {
-		gameState = GameState.PLAYING; // game state
+		gameState = GameState.PLAYER; // always let player play first
 		setMinimumSize(
 			new Dimension(Board.BOARD_SIZE+25, Board.BOARD_SIZE + StatusBar.HEIGHT*2));
 		setMaximumSize(
@@ -42,13 +42,14 @@ public class TicTacToe extends JFrame {
 			new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent e) {  // mouse-clicked handler
-					int mouseX = e.getX();
-					int mouseY = e.getY();
-					// Get the row and column clicked
-					int rowSelected = mouseY / Cell.CELL_SIZE;
-					int colSelected = mouseX / Cell.CELL_SIZE;
+					if (gameState == GameState.PLAYER) {
+						// Get mouse position 
+						int mouseX = e.getX();
+						int mouseY = e.getY();
+						// Get the row and column clicked
+						int rowSelected = mouseY / Cell.CELL_SIZE;
+						int colSelected = mouseX / Cell.CELL_SIZE;
 					
-					if (gameState == GameState.PLAYING) {
 						board.setPiece(rowSelected, colSelected, board.getNextPiece()); // set piece and update internal states
 						statusBar.setStatusText( board.getNextPiece() ); // update text to show who's turn
 						if( board.getWinner() == GameState.X_WIN) {
@@ -108,7 +109,7 @@ public class TicTacToe extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			board.init(); // board initialization
-			gameState = GameState.PLAYING;
+			gameState = GameState.PLAYER;
 			statusBar.init(); // status bar initialization
 			repaint();
 		}
