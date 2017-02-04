@@ -61,8 +61,8 @@ public class TicTacToe extends JFrame {
 							statusBar.setStatusText( GameState.DRAW );
 							gameState = GameState.DRAW;
 						}
+						repaint();  // Refresh the drawing canvas
 					}
-					repaint();  // Refresh the drawing canvas
 				}
 			}
 		);
