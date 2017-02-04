@@ -69,25 +69,43 @@ public class Board extends JPanel {
 
 	public GameState getWinner() {
 		// return the state of the game, that is who is winning
-		if(lastPiece == Piece.X ) {
-			for (int aWinningPattern : winningPatterns) {
-				if ((aWinningPattern & XPattern) == aWinningPattern) {
-					return GameState.X_WIN;
-				}
-			}
-		} else {
-			for (int aWinningPattern : winningPatterns) {
-				if ((aWinningPattern & OPattern) == aWinningPattern) {
-					return GameState.O_WIN;
-				}
-			}
+		if(lastPiece == Piece.X && IsWinner( XPattern) ) {
+			return GameState.X_WIN;
+		} else if (lastPiece==Piece.O && IsWinner( OPattern)) {
+			return GameState.O_WIN;
 		}
 		// no one wins and out of step, then draw
-		if(nPieceSet == NUM_ROW * NUM_COL) return GameState.DRAW;
+		if( IsDraw(XPattern | OPattern) ) return GameState.DRAW;
 		// otherwise, game goes on
 		return GameState.PLAYER;
 	}
 
+	/**
+	 * Determine if a pattern wins the game
+	 * @param pattern a pattern
+	 * @return if this pattern wins the game
+	 */
+	public static boolean IsWinner(int pattern) {
+		for (int aWinningPattern : winningPatterns) {
+			if ((aWinningPattern & pattern) == aWinningPattern) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Determin if a state is draw
+	 * @param pattern all positions taken by pieces
+	 * @return if game is a draw
+	 */
+	public static boolean IsDraw(int allPattern) {
+		if(allPattern == 0b111111111) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	public void init() {
 		lastPiece = null;
 		for(int i=0; i<NUM_ROW; i++) {

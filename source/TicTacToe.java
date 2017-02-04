@@ -70,7 +70,7 @@ public class TicTacToe extends JFrame {
 							// if the game is still going on, change the state to AI playing
 							gameState = GameState.AI;
 							// test random algorithm
-							int pos = AI.RandomAlgorithm(board.XPattern, board.OPattern);
+							int pos = AI.MiniMaxAlgorithm(board.XPattern, board.OPattern);
 							rowSelected = pos / 3;
 							colSelected = pos % 3;
 							board.setPiece(rowSelected, colSelected, board.getNextPiece()); // set piece and update internal states
